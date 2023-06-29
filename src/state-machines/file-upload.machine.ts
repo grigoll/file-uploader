@@ -6,7 +6,7 @@ import {
   FileUploadMachineState,
 } from '../types/file-upload-machine';
 
-let uploadController: AbortController | null = null;
+let uploadController: AbortController;
 
 export const createFileUploadMachine = (id: string) =>
   createMachine<FileUploadMachineContext, FileUploadMachineEvent, FileUploadMachineState>(

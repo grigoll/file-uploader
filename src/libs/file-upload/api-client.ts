@@ -11,6 +11,15 @@ export const fileUploadApiClient = {
     destinationUrl: `https://httpbin.org/post`,
   }),
 
+  // Not completely clear why we need to call additional API to let server know file upload has finished
+  // Upload request successful completion already indicates to a server that it was finished
+  // But was requested in the task requirements
+  notifyFileUploadFinish: async (id: string) => {
+    const body = JSON.stringify({ fileUpload: { status: 'completed', id } });
+
+    return fetch('https://httpbin.org/post', { method: 'POST', body });
+  },
+
   uploadFile: async (
     file: File,
     options: {
@@ -31,6 +40,8 @@ export const fileUploadApiClient = {
     const xhr = result.target as XMLHttpRequest;
     const data = JSON.parse(xhr.response);
 
-    return { fileId: data.args.id };
+    await fileUploadApiClient.notifyFileUploadFinish(id);
+
+    return data;
   },
 };
